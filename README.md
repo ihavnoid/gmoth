@@ -1,0 +1,2 @@
+# gmoth
+An othello AI 
