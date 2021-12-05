@@ -147,7 +147,7 @@ public:
     }
 };
 
-int find_max_score(Board & b, int xp, int yp, int polarity, int depth) {
+int find_max_score(Board & b, int polarity, int depth) {
     if(depth == 0) {
         if(b.winner() == 0) {
             return b.score;
@@ -174,7 +174,7 @@ int find_max_score(Board & b, int xp, int yp, int polarity, int depth) {
         for(int x=0; x<8; x++) {
             Board bb = b;
             if(bb.move(x, y)) {
-                int score = polarity * find_max_score(bb, x, y, -polarity, depth-1);
+                int score = polarity * find_max_score(bb, -polarity, depth-1);
                 if(b.movenum + depth < 64) {
                     score += bias_table[x][y];
                 }
@@ -188,7 +188,8 @@ int find_max_score(Board & b, int xp, int yp, int polarity, int depth) {
         }
     }
     if(num_legal_moves == 0) {
-        return find_max_score(b, -1, -1, -polarity, depth-1);
+        b.pass();
+        return find_max_score(b, -polarity, depth-1);
     } else {
         return polarity * (max_score + num_legal_moves);
     }
@@ -213,7 +214,7 @@ void think(Board & b, int depth=8) {
         for(int x=0; x<8; x++) {
             Board bb = b;
             if(bb.move(x, y)) {
-                int score = b.side * find_max_score(bb, x, y, -b.side, depth-1);
+                int score = b.side * find_max_score(bb, -b.side, depth-1);
                 if(b.movenum + depth < 64) {
                     score += bias_table[x][y];
                 }
